@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  postgis:
+    image: postgis/postgis:15-3.3          # Postgres 15 + PostGIS 3.3
+    container_name: postgis_container
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d:ro
+    networks:
+      - pgnet
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+networks:
+  pgnet:
+    driver: bridge
