@@ -3,8 +3,12 @@ package com.nikhil.project.uber.uberApp.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class Rider {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
