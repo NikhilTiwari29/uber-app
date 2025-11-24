@@ -15,7 +15,7 @@ public class RideDto {
     private DriverDto driver;
     private PaymentMethod paymentMethod;
     private RideStatus rideStatus;
-    private Double fair;
+    private Double fare;
     private LocalDateTime startedAt;
     private LocalDateTime endedAt;
 }

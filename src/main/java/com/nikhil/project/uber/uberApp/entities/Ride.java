@@ -62,7 +62,9 @@ public class Ride {
     @Enumerated(EnumType.STRING)
     private RideStatus rideStatus;
 
-    private Double fair;
+    private String otp;
+
+    private Double fare;
 
     private LocalDateTime startedAt;
 
@@ -82,6 +84,10 @@ public class Ride {
  driver_id BIGINT,
  payment_method VARCHAR(255),
  ride_status VARCHAR(255),
+ otp VARCHAR(10),
+ fare DOUBLE PRECISION,
+ started_at TIMESTAMP,
+ ended_at TIMESTAMP,
  CONSTRAINT fk_ride_rider FOREIGN KEY (rider_id) REFERENCES rider(id),
  CONSTRAINT fk_ride_driver FOREIGN KEY (driver_id) REFERENCES driver(id)
  );
