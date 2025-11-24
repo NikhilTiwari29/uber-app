@@ -51,8 +51,6 @@ public class User {
      *
      * 👉 Therefore:
      * - We use `@ElementCollection`, not `@OneToMany`.
-     * - There is **no child entity**, so `mappedBy` is **not used**.
-     * - The parent (User) fully owns this collection.
      *
      * 🔹 What Hibernate does:
      *   Since collections can’t fit into a single SQL column,
