@@ -28,7 +28,7 @@ public class RideRequest {
     @CreationTimestamp
     private LocalDateTime requestedTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
     private Rider rider;
 
     @Enumerated(EnumType.STRING)

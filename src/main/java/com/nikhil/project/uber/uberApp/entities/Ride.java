@@ -28,7 +28,7 @@ public class Ride {
     @CreationTimestamp
     private LocalDateTime createdTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
     private Rider rider;
 
     @ManyToOne(fetch = FetchType.LAZY)

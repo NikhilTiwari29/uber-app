@@ -26,14 +26,14 @@ public class WalletTransaction {
     @Enumerated(EnumType.STRING)
     private TransactionMethod transactionMethod;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "ride_id")
     private Ride ride;
 
     @Column(nullable = false, unique = true)
     private String transactionId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "wallet_id", nullable = false)
     private Wallet wallet;
 
