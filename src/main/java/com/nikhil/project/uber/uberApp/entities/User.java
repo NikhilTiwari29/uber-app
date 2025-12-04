@@ -45,6 +45,39 @@ public class User {
     private Set<Role> roles;
 }
 
+/*
+   ❗ Why we do NOT use @Data in JPA entities
+
+   Lombok's @Data generates:
+   - getters & setters
+   - equals()
+   - hashCode()
+   - toString()
+
+   These cause MAJOR PROBLEMS with JPA:
+
+   1️⃣ equals() & hashCode() generate issues with Hibernate proxies
+       - Hibernate wraps entities with proxy classes
+       - equals/hashCode using all fields can trigger unexpected queries
+       - Can break entity identity and persistence behavior
+
+   2️⃣ toString() can cause infinite loops
+       - If an entity references another entity with a relationship (e.g., Driver → User → Driver)
+       - @Data toString() prints all fields → leads to recursive calls → StackOverflowError
+
+   3️⃣ Performance issues
+       - equals(), hashCode() including all columns create heavy operations
+       - Can trigger lazy loading unintentionally → massive performance hits
+
+   4️⃣ JPA's requirement for controlled getters/setters
+       - Entities should have simple getters/setters
+       - equals/hashCode should usually be based ONLY on the primary key (id)
+
+   ✔ Therefore: We use @Getter and @Setter ONLY
+   ✔ And avoid @Data to prevent proxy issues, recursion, and unexpected lazy loading
+*/
+
+
 /* ============================
        COMMENT FOR PRIMARY KEY
    ============================
