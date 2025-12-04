@@ -95,3 +95,68 @@ public class Driver {
    );
 
    =========================================================================== */
+
+/*
+   ========================================================================
+   ❗ Why we use optional = false in @OneToOne (Driver → User)
+   ========================================================================
+
+   optional = false (JPA-level constraint)
+   ---------------------------------------
+   - Means the Driver entity CANNOT exist without a User.
+   - Hibernate will throw an error BEFORE executing SQL if driver.user is null.
+   - Ensures that in Java code:
+        new Driver().save()
+     is NOT allowed unless a User is assigned.
+
+   nullable = false (Database-level constraint)
+   --------------------------------------------
+   - Enforces NOT NULL on the "user_id" column in the database.
+   - Prevents inserting NULL via SQL or another microservice.
+   - Both optional=false AND nullable=false protect data at different layers.
+
+   Why this makes sense here:
+   --------------------------
+   - A Driver MUST always be a User in the system.
+   - Business rule: No driver exists without a user profile.
+*/
+
+/*
+   ========================================================================
+   ❌ Why we DO NOT use cascade = CascadeType.ALL in Driver → User
+   ========================================================================
+
+   Driver is NOT the parent of User.
+   ---------------------------------
+   - User is a high-level, global entity.
+   - Driver is "just a role" of a user.
+   - User should NEVER be deleted or auto-modified when Driver changes.
+
+   What goes wrong with cascade:
+   -----------------------------
+   If we did:
+
+       @OneToOne(cascade = CascadeType.ALL)
+       private User user;
+
+   Then:
+
+       driverRepository.delete(driver);
+
+   Would also delete:
+       ❌ the User row
+       ❌ associated Rider entity (if exists)
+       ❌ associated Wallet
+       ❌ associated WalletTransactions
+       ❌ associated RideRequests
+       ❌ basically the entire user account
+
+   This is DANGEROUS and breaks your whole app.
+
+   General rule:
+   -------------
+   ❌ Never cascade from child → parent.
+   ❌ Never cascade from an entity linked to User, Rider, Driver, Payment, Ride.
+   ✔ Only cascade from true parent → true child (e.g., Wallet → Transactions)
+*/
+
