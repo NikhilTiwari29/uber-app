@@ -16,9 +16,6 @@ import java.util.Set;
 @Setter
 public class User {
 
-    // ----------------------------
-    // 🔹 Primary Key
-    // ----------------------------
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,95 +35,90 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-
-    // ----------------------------
-// 🔹 User Roles Collection
-// ----------------------------
-    /**
-     * Stores the list of roles assigned to a user (e.g., ADMIN, DRIVER, USER).
-     *
-     * ❗ IMPORTANT:
-     * This is **not** a One-to-Many relationship because `Role` is an enum, not an entity.
-     * Since enums cannot be stored as a single column inside the `users` table (because this is a collection),
-     * Hibernate creates a **separate table** to store these values.
-     *
-     * Therefore → `@ElementCollection` is used.
-     *
-     * 🔹 How Hibernate stores this collection:
-     *   A new table named `user_roles` is created with the following structure:
-     *
-     *       user_roles (
-     *           user_id   BIGINT  — FK to users.id
-     *           role      VARCHAR — enum value stored as STRING
-     *       )
-     *
-     * 🔹 LAZY loading:
-     *   The `user_roles` table is queried **only when `user.getRoles()` is accessed**,
-     *   which improves performance during regular user lookups.
-     */
     @ElementCollection(fetch = FetchType.LAZY)
-
-/**
- * Specifies details of the collection table that stores user roles.
- *
- * - name = "user_roles"
- *       The table where all roles are stored.
- *
- * - @JoinColumn(name = "user_id")
- *       Defines the foreign key column inside `user_roles` that links
- *       each role entry back to its parent user.
- *
- * ❗ Why `@JoinColumn` and not `mappedBy`?
- *    Because there is **no child entity** here.
- *    This is not a bidirectional relationship.
- *    User controls the table mapping, so User must specify the join details.
- */
     @CollectionTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id")
     )
-
-/**
- * Stores enum values as strings (e.g., "ADMIN", "RIDER") rather than numeric ordinals.
- *
- * ✔ STRING  → safe, readable, database-friendly
- * ✘ ORDINAL → risky (breaks if enum order changes)
- */
     @Enumerated(EnumType.STRING)
-
-/**
- * The name of the column inside the `user_roles` table
- * that holds the individual role values.
- *
- * ⚠️ NOTE:
- * This column does **not** appear in the `users` table.
- * It appears inside the automatically created `user_roles` table.
- */
     @Column(name = "role")
     private Set<Role> roles;
-
 }
 
+/* ============================
+       COMMENT FOR PRIMARY KEY
+   ============================
 
-/**
- * 🧾 Equivalent SQL Schema:
- *
- * CREATE TABLE users (
- *   id BIGSERIAL PRIMARY KEY,
- *   name VARCHAR(100) NOT NULL,
- *   email VARCHAR(150) NOT NULL UNIQUE,
- *   password VARCHAR(255) NOT NULL
- * );
- *
- * -- ⚙️ Value Collection Table (not an Entity relationship)
- * -- This is not a One-to-Many association, because "roles" is a Set<Enum>, not a Set<Entity>.
- * -- Hibernate still creates a separate table to store these enum values.
- *
- * CREATE TABLE user_roles (
- *   user_id BIGINT NOT NULL,               -- FK linking to users(id)
- *   role VARCHAR(255),                     -- Enum value stored as string
- *   CONSTRAINT fk_user_roles_user
- *       FOREIGN KEY (user_id)
- *       REFERENCES users(id)
- * );
- */
+   - @Id → Marks primary key
+   - @GeneratedValue → Auto-generated using identity strategy
+*/
+
+/* ====================================
+   COMMENT FOR @ElementCollection(roles)
+   ====================================
+
+   Stores the list of roles assigned to a user (e.g., ADMIN, DRIVER, USER).
+
+   This is NOT a One-to-Many relationship because Role is an ENUM (value type)
+   and NOT an entity.
+
+   Therefore Hibernate creates a SEPARATE TABLE to store this collection:
+
+       user_roles (
+           user_id BIGINT,
+           role VARCHAR
+       )
+
+   LAZY loading → This table is queried only when user.getRoles() is called.
+*/
+
+/* =====================================
+   COMMENT FOR @CollectionTable(…)
+   =====================================
+
+   - name = "user_roles"
+         Defines the table that stores user-role mappings.
+
+   - joinColumns = @JoinColumn(name = "user_id")
+         The foreign key column inside user_roles table pointing to users.id.
+
+   Why NOT `mappedBy`?
+   Because there is no child entity. This is NOT a bidirectional relationship.
+*/
+
+/* =====================================
+   COMMENT FOR @Enumerated(EnumType.STRING)
+   =====================================
+
+   Stores enum values as STRING ("ADMIN", "RIDER") instead of ORDINAL (0,1,2…).
+
+   ✔ STRING → readable, safe
+   ✘ ORDINAL → risky if enum order changes
+*/
+
+/* =====================================
+   COMMENT FOR @Column(name = "role")
+   =====================================
+
+   This column exists in the user_roles table (NOT in users table).
+
+   It stores the actual enum value for each assigned role.
+*/
+
+/* ==============================
+      Equivalent SQL Schema
+   ==============================
+
+   CREATE TABLE users (
+     id BIGSERIAL PRIMARY KEY,
+     name VARCHAR(100) NOT NULL,
+     email VARCHAR(150) NOT NULL UNIQUE,
+     password VARCHAR(255) NOT NULL
+   );
+
+   CREATE TABLE user_roles (
+     user_id BIGINT NOT NULL,
+     role VARCHAR(255),
+     FOREIGN KEY (user_id) REFERENCES users(id)
+   );
+*/

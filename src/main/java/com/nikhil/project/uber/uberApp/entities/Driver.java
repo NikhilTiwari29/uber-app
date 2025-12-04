@@ -16,23 +16,11 @@ public class Driver {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Min(value = 0, message = "Rating cannot be less than 0")
-    @Max(value = 5, message = "Rating cannot be greater than 5")
+    @Min(0)
+    @Max(5)
     @Column(nullable = false)
     private Double rating;
 
-    // ----------------------------
-    // 🔹 Relationship: Driver → User (1:1)
-    // ----------------------------
-    /**
-     * Each Driver is associated with exactly one User.SO that means 1 driver will have only 1 userId
-     *
-     * - @OneToOne → Defines a one-to-one relationship.
-     * - @JoinColumn → will create exactly one column named user_id inside the drivers table,and that column will be
-     * a foreign key that will references the primary key (id) of the users table.
-     *
-     * - unique = true → Ensures one User cannot be linked to multiple Drivers.
-     */
     @OneToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
@@ -43,15 +31,34 @@ public class Driver {
     private Point currentLocation;
 }
 
-/**
- * 🧾 Equivalent SQL Schema:
- *
- CREATE TABLE drivers (
- id BIGSERIAL PRIMARY KEY,
- rating DOUBLE PRECISION NOT NULL,
- user_id BIGINT NOT NULL UNIQUE,
- available BOOLEAN,
- current_location Geometry(Point, 4326),
- CONSTRAINT fk_driver_user FOREIGN KEY (user_id) REFERENCES users(id)
- );
- */
+/* ============================================================================
+   📘 DRIVER ENTITY — FULL DOCUMENTATION
+   ============================================================================
+
+   FIELD-WISE DETAILS
+   ------------------
+
+   2️⃣ user (Column: user_id)
+       Relationship: Driver → User (1:1)
+       - A driver is linked to exactly one user
+       - @OneToOne → creates a one-to-one mapping
+       - @JoinColumn(name = "user_id") → creates user_id column
+       - unique = true → ensures one user cannot be assigned to multiple drivers
+       - nullable = false → driver must always have a user
+
+   3️⃣ currentLocation (Column: current_location)
+       - Stores GIS-based driver location
+       - Uses PostGIS geometry: Geometry(Point, 4326)
+
+   SQL EQUIVALENT SCHEMA
+   ----------------------
+   CREATE TABLE drivers (
+       id BIGSERIAL PRIMARY KEY,
+       rating DOUBLE PRECISION NOT NULL,
+       user_id BIGINT NOT NULL UNIQUE,
+       available BOOLEAN,
+       current_location Geometry(Point, 4326),
+       CONSTRAINT fk_driver_user FOREIGN KEY (user_id) REFERENCES users(id)
+   );
+
+   =========================================================================== */

@@ -28,31 +28,9 @@ public class Ride {
     @CreationTimestamp
     private LocalDateTime createdTime;
 
-    // ----------------------------
-    // 🔹 Relationship: Ride → Rider (Many-to-One)
-    // ----------------------------
-    /**
-     * Many rides can be associated with one rider.
-     *
-     * - @ManyToOne → Many rides belong to one Rider.
-     * - fetch = LAZY → Rider is loaded only when accessed using ride.getRider().
-     * - Foreign key: A column named `rider_id` will be created in the rides table that is
-     *   referencing the primary key of the Rider table.
-     */
     @ManyToOne(fetch = FetchType.LAZY)
     private Rider rider;
 
-    // ----------------------------
-    // 🔹 Relationship: Ride → Driver (Many-to-One)
-    // ----------------------------
-    /**
-     * Many rides can be assigned to one driver.
-     *
-     * - @ManyToOne → A driver can serve multiple rides.
-     * - fetch = LAZY → Driver is loaded only when accessed via ride.getDriver().
-     * - Foreign key: A column named `driver_id` will be created in the rides table that is referencing
-     *   the primary key of the Driver table.
-     */
     @ManyToOne(fetch = FetchType.LAZY)
     private Driver driver;
 
@@ -71,24 +49,49 @@ public class Ride {
     private LocalDateTime endedAt;
 }
 
+/*
+    ----------------------------
+    🔹 Relationship: Ride → Rider (Many-to-One)
+    ----------------------------
 
-/**
- * 🧾 Equivalent SQL Schema:
- *
- CREATE TABLE ride (
- id BIGSERIAL PRIMARY KEY,
- pickup_location Geometry(Point, 4326),
- drop_off_location Geometry(Point, 4326),
- created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
- rider_id BIGINT,
- driver_id BIGINT,
- payment_method VARCHAR(255),
- ride_status VARCHAR(255),
- otp VARCHAR(10),
- fare DOUBLE PRECISION,
- started_at TIMESTAMP,
- ended_at TIMESTAMP,
- CONSTRAINT fk_ride_rider FOREIGN KEY (rider_id) REFERENCES rider(id),
- CONSTRAINT fk_ride_driver FOREIGN KEY (driver_id) REFERENCES driver(id)
- );
- */
+    Many rides can be associated with one rider.
+
+    - @ManyToOne → Many rides belong to one Rider.
+    - fetch = LAZY → Rider is loaded only when accessed using ride.getRider().
+    - Foreign key: A column named `rider_id` will be created in the rides table that is
+      referencing the primary key of the Rider table.
+*/
+
+/*
+    ----------------------------
+    🔹 Relationship: Ride → Driver (Many-to-One)
+    ----------------------------
+
+    Many rides can be assigned to one driver.
+
+    - @ManyToOne → A driver can serve multiple rides.
+    - fetch = LAZY → Driver is loaded only when accessed via ride.getDriver().
+    - Foreign key: A column named `driver_id` will be created in the rides table that is
+      referencing the primary key of the Driver table.
+*/
+
+/*
+    🧾 Equivalent SQL Schema:
+
+    CREATE TABLE ride (
+        id BIGSERIAL PRIMARY KEY,
+        pickup_location Geometry(Point, 4326),
+        drop_off_location Geometry(Point, 4326),
+        created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        rider_id BIGINT,
+        driver_id BIGINT,
+        payment_method VARCHAR(255),
+        ride_status VARCHAR(255),
+        otp VARCHAR(10),
+        fare DOUBLE PRECISION,
+        started_at TIMESTAMP,
+        ended_at TIMESTAMP,
+        CONSTRAINT fk_ride_rider FOREIGN KEY (rider_id) REFERENCES rider(id),
+        CONSTRAINT fk_ride_driver FOREIGN KEY (driver_id) REFERENCES driver(id)
+    );
+*/

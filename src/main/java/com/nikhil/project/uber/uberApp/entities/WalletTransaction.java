@@ -26,19 +26,6 @@ public class WalletTransaction {
     @Enumerated(EnumType.STRING)
     private TransactionMethod transactionMethod;
 
-    // ----------------------------
-    // 🔹 Relationship: WalletTransaction → Ride (1:1)
-    // ----------------------------
-    /**
-     * A transaction may be linked to a specific ride.
-     *
-     * - @OneToOne → One transaction maps to one ride.
-     * - @JoinColumn → Foreign key column: ride_id
-     *
-     * Use cases:
-     * - Deduct fare after completing a ride
-     * - Refund after ride cancellation
-     */
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ride_id")
     private Ride ride;
@@ -46,19 +33,6 @@ public class WalletTransaction {
     @Column(nullable = false, unique = true)
     private String transactionId;
 
-    // ----------------------------
-    // 🔹 Relationship: WalletTransaction → Wallet (Many-to-One)
-    // ----------------------------
-    /**
-     * Many transactions belong to one wallet.
-     *
-     * - @ManyToOne → One wallet can contain many transactions.
-     * - @JoinColumn → Creates wallet_id in wallet_transaction table.
-     *
-     * Example:
-     * wallet.addMoney(...) → creates one CREDIT transaction
-     * wallet.deductFare(...) → creates one DEBIT transaction
-     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "wallet_id", nullable = false)
     private Wallet wallet;
@@ -67,21 +41,49 @@ public class WalletTransaction {
     private LocalDateTime timeStamp;
 }
 
+/* =======================================================
+   COMMENT FOR @OneToOne WalletTransaction → Ride (1:1)
+   =======================================================
 
-/**
- * 🧾 Equivalent SQL Schema:
- *
- CREATE TABLE wallet_transaction (
- id BIGSERIAL PRIMARY KEY,
- amount DOUBLE PRECISION,
- transaction_type VARCHAR(255),
- transaction_method VARCHAR(255),
- ride_id BIGINT,
- wallet_id BIGINT NOT NULL,
- transaction_id VARCHAR(255) NOT NULL UNIQUE,
- time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   A transaction may be linked to a specific ride.
 
- CONSTRAINT fk_wallet_txn_ride   FOREIGN KEY (ride_id)   REFERENCES ride(id),
- CONSTRAINT fk_wallet_txn_wallet FOREIGN KEY (wallet_id) REFERENCES wallet(id)
- );
- */
+   - @OneToOne → One transaction maps to one ride.
+   - @JoinColumn → Foreign key column: ride_id
+
+   Use cases:
+   - Deduct fare after completing a ride
+   - Refund after ride cancellation
+*/
+
+/* ==========================================================
+   COMMENT FOR @ManyToOne WalletTransaction → Wallet (N:1)
+   ==========================================================
+
+   Many transactions belong to one wallet.
+
+   - @ManyToOne → One wallet can contain many transactions.
+   - @JoinColumn → Creates wallet_id in wallet_transaction table.
+
+   Example:
+   wallet.addMoney(...) → creates one CREDIT transaction
+   wallet.deductFare(...) → creates one DEBIT transaction
+*/
+
+/* ==============================
+      Equivalent SQL Schema
+   ==============================
+
+   CREATE TABLE wallet_transaction (
+       id BIGSERIAL PRIMARY KEY,
+       amount DOUBLE PRECISION,
+       transaction_type VARCHAR(255),
+       transaction_method VARCHAR(255),
+       ride_id BIGINT,
+       wallet_id BIGINT NOT NULL,
+       transaction_id VARCHAR(255) NOT NULL UNIQUE,
+       time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+       CONSTRAINT fk_wallet_txn_ride   FOREIGN KEY (ride_id)   REFERENCES ride(id),
+       CONSTRAINT fk_wallet_txn_wallet FOREIGN KEY (wallet_id) REFERENCES wallet(id)
+   );
+*/
