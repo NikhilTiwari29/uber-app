@@ -31,7 +31,7 @@ public class Ride {
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     private Rider rider;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
     private Driver driver;
 
     @Enumerated(EnumType.STRING)
