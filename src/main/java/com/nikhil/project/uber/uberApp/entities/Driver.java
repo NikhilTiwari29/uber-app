@@ -29,6 +29,8 @@ public class Driver {
 
     @Column(columnDefinition = "Geometry(Point, 4326)")
     private Point currentLocation;
+
+    private String vehicleId;
 }
 
 /*
@@ -91,6 +93,7 @@ public class Driver {
        user_id BIGINT NOT NULL UNIQUE,
        available BOOLEAN,
        current_location Geometry(Point, 4326),
+       vehicle_id varchar(50)
        CONSTRAINT fk_driver_user FOREIGN KEY (user_id) REFERENCES users(id)
    );
 

@@ -36,6 +36,8 @@ public class RideRequest {
 
     @Enumerated(EnumType.STRING)
     private RideRequestStatus rideRequestStatus;
+
+    private Double fare;
 }
 
 /*
@@ -95,6 +97,7 @@ public class RideRequest {
         rider_id BIGINT,
         payment_method VARCHAR(255),
         ride_request_status VARCHAR(255),
+        fare DOUBLE PRECISION,
         CONSTRAINT fk_riderequest_rider FOREIGN KEY (rider_id) REFERENCES rider(id)
     );
 */
