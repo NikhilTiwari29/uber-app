@@ -14,11 +14,12 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
 
     @Query(
             value = """
-            SELECT d.*
+            SELECT d.*,
+            ST_Distance(d.current_location, :pickupLocation) As distance
             FROM driver d
             WHERE d.available = true
               AND ST_DWithin(d.current_location, :pickupLocation, 10000)
-            ORDER BY ST_Distance(d.current_location, :pickupLocation)
+            ORDER BY distance
             LIMIT 10
             """,
             nativeQuery = true
