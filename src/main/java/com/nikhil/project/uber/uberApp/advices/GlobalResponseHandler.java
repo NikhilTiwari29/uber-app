@@ -9,6 +9,29 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+/**
+ * ✅ GlobalResponseHandler
+ *
+ * This class intercepts every successful HTTP response returned by a controller
+ * and wraps it into a standardized {@link ApiResponse} format.
+ *
+ * 🔁 Execution Order:
+ * Client → Controller → Service → Controller → GlobalResponseHandler → HTTP Response
+ *
+ * ✅ Success Flow:
+ * - Controller returns raw object (User, Ride, List, etc.)
+ * - beforeBodyWrite() wraps it into ApiResponse<T>
+ *
+ * ❌ Error Flow:
+ * - Exception thrown in Controller/Service
+ * - Handled by GlobalExceptionHandler
+ * - Returns ApiResponse as body
+ * - Passes through GlobalResponseHandler (no re-wrapping needed)
+ *
+ * This ensures ALL API responses follow one consistent structure.
+ */
+
+
 @RestControllerAdvice
 public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
 

@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
 
     // ✅ Handle user already exists
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ApiResponse<Void>> handleUserAlreadyExists(UserAlreadyExistsException ex) {
+    public ResponseEntity<ApiResponse<?>> handleUserAlreadyExists(UserAlreadyExistsException ex) {
 
         ApiError apiError = ApiError.builder()
                 .httpStatus(HttpStatus.CONFLICT)
@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
 
     // ✅ Handle validation errors (@Valid)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Void>> handleValidationErrors(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ApiResponse<?>> handleValidationErrors(MethodArgumentNotValidException ex) {
 
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
 
     // ✅ Handle constraint violations (@RequestParam, @PathVariable)
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ApiResponse<Void>> handleConstraintViolations(ConstraintViolationException ex) {
+    public ResponseEntity<ApiResponse<?>> handleConstraintViolations(ConstraintViolationException ex) {
 
         List<String> errors = ex.getConstraintViolations()
                 .stream()
@@ -73,7 +73,7 @@ public class GlobalExceptionHandler {
 
     // ✅ Handle malformed JSON
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiResponse<Void>> handleInvalidJson(HttpMessageNotReadableException ex) {
+    public ResponseEntity<ApiResponse<?>> handleInvalidJson(HttpMessageNotReadableException ex) {
 
         ApiError apiError = ApiError.builder()
                 .httpStatus(HttpStatus.BAD_REQUEST)
@@ -88,7 +88,7 @@ public class GlobalExceptionHandler {
 
     // ✅ Fallback for all unhandled exceptions
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleGenericException(Exception ex) {
+    public ResponseEntity<ApiResponse<?>> handleGenericException(Exception ex) {
 
         ApiError apiError = ApiError.builder()
                 .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
