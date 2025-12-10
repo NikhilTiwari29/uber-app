@@ -1,5 +1,6 @@
 package com.nikhil.project.uber.uberApp.services.impl;
 
+import com.nikhil.project.uber.uberApp.exceptions.DistanceCalculationException;
 import com.nikhil.project.uber.uberApp.services.DistanceService;
 import lombok.Data;
 import org.locationtech.jts.geom.Point;
@@ -16,7 +17,10 @@ public class DistanceServiceOSRMImpl implements DistanceService {
 
     @Override
     public double calculateDistance(Point src, Point dest) {
-        String uri = src.getX() + "," + src.getY() + ";" + dest.getX() + "," + dest.getY();
+
+        String uri = src.getX() + "," + src.getY() + ";" +
+                dest.getX() + "," + dest.getY();
+
         try {
             OSRMResponseDto osrmResponseDto = RestClient.builder()
                     .baseUrl(OSRM_API_BASE_URL)
@@ -29,14 +33,16 @@ public class DistanceServiceOSRMImpl implements DistanceService {
             if (osrmResponseDto == null ||
                     osrmResponseDto.getRoutes() == null ||
                     osrmResponseDto.getRoutes().isEmpty()) {
-                throw new RuntimeException("Empty response received from OSRM");
+                throw new DistanceCalculationException("Empty response received from OSRM");
             }
 
-            // ✅ OSRM returns distance in METERS → convert to KM
             return osrmResponseDto.getRoutes().get(0).getDistance() / 1000.0;
 
         } catch (Exception ex) {
-            throw new RuntimeException("Error while calling OSRM API for distance calculation", ex);
+            throw new DistanceCalculationException(
+                    "Error while calling OSRM API for distance calculation",
+                    ex
+            );
         }
     }
 }

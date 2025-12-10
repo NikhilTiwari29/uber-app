@@ -28,7 +28,7 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
 
     @Query(
             value = """
-            SELECT d.*,
+            SELECT d.*
             FROM driver d
             WHERE d.available = true
               AND ST_DWithin(d.current_location, :pickupLocation, 15000)
