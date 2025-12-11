@@ -9,37 +9,14 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-/**
- * ✅ GlobalResponseHandler
- *
- * This class intercepts every successful HTTP response returned by a controller
- * and wraps it into a standardized {@link ApiResponse} format.
- *
- * 🔁 Execution Order:
- * Client → Controller → Service → Controller → GlobalResponseHandler → HTTP Response
- *
- * ✅ Success Flow:
- * - Controller returns raw object (User, Ride, List, etc.)
- * - beforeBodyWrite() wraps it into ApiResponse<T>
- *
- * ❌ Error Flow:
- * - Exception thrown in Controller/Service
- * - Handled by GlobalExceptionHandler
- * - Returns ApiResponse as body
- * - Passes through GlobalResponseHandler (no re-wrapping needed)
- *
- * This ensures ALL API responses follow one consistent structure.
- */
-
-
 @RestControllerAdvice
 public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
 
     @Override
     public boolean supports(MethodParameter returnType,
                             Class<? extends HttpMessageConverter<?>> converterType) {
-
-        // ✅ Avoid double-wrapping if it's already ApiResponse
+        // Keep as-is (guard based on declared return type).
+        // We still must defensively handle the body instance in beforeBodyWrite.
         return !returnType.getParameterType().equals(ApiResponse.class);
     }
 
@@ -51,23 +28,27 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
                                   ServerHttpRequest request,
                                   ServerHttpResponse response) {
 
-        // ✅ Allow null responses (like DELETE)
+        // If the controller/exception handler already returned ApiResponse, don't re-wrap.
+        if (body instanceof ApiResponse) {
+            return body;
+        }
+
+        // Allow null responses (like DELETE) -> empty success wrapper
         if (body == null) {
             return new ApiResponse<>(null);
         }
 
-        // ✅ Special case for String responses
-        // Because Spring uses a different converter for String
+        // Special case for String responses: Spring expects a raw String (different converter).
         if (body instanceof String) {
             try {
                 ObjectMapper mapper = new ObjectMapper();
                 return mapper.writeValueAsString(new ApiResponse<>(body));
             } catch (Exception e) {
-                throw new RuntimeException("Error wrapping String response");
+                throw new RuntimeException("Error wrapping String response", e);
             }
         }
 
-        // ✅ Normal case
+        // Normal case: wrap body into ApiResponse
         return new ApiResponse<>(body);
     }
 }

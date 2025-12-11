@@ -1,10 +1,6 @@
 package com.nikhil.project.uber.uberApp.advices;
 
-import com.nikhil.project.uber.uberApp.exceptions.DistanceCalculationException;
-import com.nikhil.project.uber.uberApp.exceptions.UserAlreadyExistsException;
-import com.nikhil.project.uber.uberApp.exceptions.RiderNotFoundException;
-import com.nikhil.project.uber.uberApp.exceptions.RideRequestNotFoundException;
-import com.nikhil.project.uber.uberApp.exceptions.RideRequestCannotBeAcceptedException;
+import com.nikhil.project.uber.uberApp.exceptions.*;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -20,7 +20,10 @@ public class RideRequestServiceImpl implements RideRequestService {
     }
 
     @Override
-    public RideRequest updateRideRequest(RideRequest rideRequest) {
-        if ()
+    public void updateRideRequest(RideRequest rideRequest) {
+        rideRequestRepository.findById(rideRequest.getId()).orElseThrow(() -> {
+            throw new RideRequestNotFoundException("Ride request not found with id " + rideRequest.getId());
+        });
+        rideRequestRepository.save(rideRequest);
     }
 }

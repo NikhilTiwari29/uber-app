@@ -1,6 +1,5 @@
 package com.nikhil.project.uber.uberApp.controllers;
 
-import com.nikhil.project.uber.uberApp.dto.RideRequestDto;
 import com.nikhil.project.uber.uberApp.dto.SignUpDto;
 import com.nikhil.project.uber.uberApp.dto.UserDto;
 import com.nikhil.project.uber.uberApp.services.AuthService;
