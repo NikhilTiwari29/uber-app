@@ -1,7 +1,10 @@
 package com.nikhil.project.uber.uberApp.repositories;
 
 import com.nikhil.project.uber.uberApp.entities.Driver;
+import com.nikhil.project.uber.uberApp.entities.Ride;
 import org.locationtech.jts.geom.Point;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -38,4 +41,6 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
             nativeQuery = true
     )
     List<Driver> findTenNearByTopRatedDrivers(@Param("pickupLocation") Point pickupLocation);
+
+    Page<Ride> findByDriver(Driver driver, Pageable pageRequest);
 }

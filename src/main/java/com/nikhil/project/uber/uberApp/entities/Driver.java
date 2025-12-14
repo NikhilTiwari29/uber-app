@@ -4,12 +4,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.locationtech.jts.geom.Point;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Driver {
 
     @Id
@@ -27,10 +29,11 @@ public class Driver {
 
     private Boolean available;
 
+    private String vehicleId;
+
     @Column(columnDefinition = "Geometry(Point, 4326)")
     private Point currentLocation;
 
-    private String vehicleId;
 }
 
 /*

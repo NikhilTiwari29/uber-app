@@ -1,12 +1,13 @@
 package com.nikhil.project.uber.uberApp.services.impl;
 
-import com.nikhil.project.uber.uberApp.dto.RideRequestDto;
 import com.nikhil.project.uber.uberApp.entities.Driver;
 import com.nikhil.project.uber.uberApp.entities.Ride;
 import com.nikhil.project.uber.uberApp.entities.RideRequest;
+import com.nikhil.project.uber.uberApp.entities.Rider;
 import com.nikhil.project.uber.uberApp.enums.RideRequestStatus;
 import com.nikhil.project.uber.uberApp.enums.RideStatus;
 import com.nikhil.project.uber.uberApp.exceptions.RideNotFoundException;
+import com.nikhil.project.uber.uberApp.repositories.DriverRepository;
 import com.nikhil.project.uber.uberApp.repositories.RideRepository;
 import com.nikhil.project.uber.uberApp.services.RideRequestService;
 import com.nikhil.project.uber.uberApp.services.RideService;
@@ -26,17 +27,13 @@ public class RideServiceImpl implements RideService {
     private final RideRepository rideRepository;
     private final RideRequestService rideRequestService;
     private final ModelMapper modelMapper;
+    private final DriverRepository driverRepository;
 
     @Override
     public Ride getRideById(Long rideId) {
         return rideRepository.findById(rideId).orElseThrow(() -> new RideNotFoundException(
                 "Ride not found with id: " + rideId
         ));
-    }
-
-    @Override
-    public void matchWithDrivers(RideRequestDto rideRequestDto) {
-
     }
 
     @Override
@@ -71,13 +68,13 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public Page<Ride> getAllRidesOfRider(Long riderId, PageRequest pageRequest) {
-        return null;
+    public Page<Ride> getAllRidesOfRider(Rider rider, PageRequest pageRequest) {
+        return rideRepository.findByRider(rider,pageRequest);
     }
 
     @Override
-    public Page<Ride> getAllRidesOfDriver(Long driverId, PageRequest pageRequest) {
-        return null;
+    public Page<Ride> getAllRidesOfDriver(Driver driver, PageRequest pageRequest) {
+        return driverRepository.findByDriver(driver,pageRequest);
     }
 
     public String generateOtp() {

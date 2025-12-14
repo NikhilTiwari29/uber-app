@@ -4,6 +4,7 @@ import com.nikhil.project.uber.uberApp.enums.PaymentMethod;
 import com.nikhil.project.uber.uberApp.enums.RideRequestStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.locationtech.jts.geom.Point;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class RideRequest {
 
     @Id
