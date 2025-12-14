@@ -28,6 +28,8 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
                                   ServerHttpRequest request,
                                   ServerHttpResponse response) {
 
+        if (request.getURI().getPath().contains("/v3/api-docs")) return body;
+
         // If the controller/exception handler already returned ApiResponse, don't re-wrap.
         if (body instanceof ApiResponse) {
             return body;

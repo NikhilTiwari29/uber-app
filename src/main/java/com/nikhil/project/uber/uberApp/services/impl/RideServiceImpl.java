@@ -7,7 +7,6 @@ import com.nikhil.project.uber.uberApp.entities.Rider;
 import com.nikhil.project.uber.uberApp.enums.RideRequestStatus;
 import com.nikhil.project.uber.uberApp.enums.RideStatus;
 import com.nikhil.project.uber.uberApp.exceptions.RideNotFoundException;
-import com.nikhil.project.uber.uberApp.repositories.DriverRepository;
 import com.nikhil.project.uber.uberApp.repositories.RideRepository;
 import com.nikhil.project.uber.uberApp.services.RideRequestService;
 import com.nikhil.project.uber.uberApp.services.RideService;
@@ -27,7 +26,6 @@ public class RideServiceImpl implements RideService {
     private final RideRepository rideRepository;
     private final RideRequestService rideRequestService;
     private final ModelMapper modelMapper;
-    private final DriverRepository driverRepository;
 
     @Override
     public Ride getRideById(Long rideId) {
@@ -74,7 +72,7 @@ public class RideServiceImpl implements RideService {
 
     @Override
     public Page<Ride> getAllRidesOfDriver(Driver driver, PageRequest pageRequest) {
-        return driverRepository.findByDriver(driver,pageRequest);
+        return rideRepository.findByDriver(driver,pageRequest);
     }
 
     public String generateOtp() {

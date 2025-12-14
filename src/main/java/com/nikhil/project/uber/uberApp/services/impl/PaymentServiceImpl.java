@@ -4,7 +4,6 @@ import com.nikhil.project.uber.uberApp.entities.Payment;
 import com.nikhil.project.uber.uberApp.entities.Ride;
 import com.nikhil.project.uber.uberApp.enums.PaymentStatus;
 import com.nikhil.project.uber.uberApp.exceptions.PaymentNotFoundException;
-import com.nikhil.project.uber.uberApp.exceptions.RideNotFoundException;
 import com.nikhil.project.uber.uberApp.repositories.PaymentRepository;
 import com.nikhil.project.uber.uberApp.services.PaymentService;
 import com.nikhil.project.uber.uberApp.strategies.PaymentStrategyManager;
